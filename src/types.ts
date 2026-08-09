@@ -11,6 +11,7 @@ export interface TranslationResult {
   grammaticalNotes: string;
   wordBreakdown: WordBreakdownItem[];
   alternativeExpressions?: string[];
+  detectedCorrection?: string;
 }
 
 export interface TranslationHistoryItem {
@@ -23,6 +24,7 @@ export interface TranslationHistoryItem {
   isFavorite: boolean;
   grammaticalNotes?: string;
   wordBreakdown?: WordBreakdownItem[];
+  detectedCorrection?: string;
 }
 
 export interface PhraseCategory {

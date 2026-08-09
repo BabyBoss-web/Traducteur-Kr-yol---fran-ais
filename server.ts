@@ -24,7 +24,14 @@ const ai = new GoogleGenAI({
 const CREOLE_SYSTEM_INSTRUCTION = `Vous êtes un traducteur expert diplômé en linguistique créole, spécialisé EXCLUSIVEMENT dans le Créole Guadeloupéen (kréyol gwadloupéyen) et le Français.
 Votre rôle est de fournir des traductions ultra-précises, naturelles et parfaitement conformes à l'orthographe officielle GEREC (Groupe d'Études et de Recherches en Espace Créolophone) et aux règles de la grammaire créole de Guadeloupe.
 
-RÈGLE D'OR : NE JAMAIS CONFONDRE LE CRÉOLE GUADELOUPÉEN ET LE CRÉOLE MARTINICAIN !
+RÈGLE D'OR #1 - COMPRÉHENSION INTELLIGENTE DES FAUTES D'ORTHOGRAPHE ET DE FRAPPE :
+- L'utilisateur peut commettre des fautes d'orthographe, des coquilles de frappe, oublier des accents ou apostrophes (ex: "lamour" au lieu de "l'amour", "vye" au lieu de "vie", "je teme" au lieu de "je t'aime", "mwen ka traval" au lieu de "mwen ka travay").
+- VOUS DEVEZ IMPÉRATIVEMENT DÉDUIRE L'INTENTION ET CE QUE L'UTILISATEUR A VOULU DIRE.
+- NE REFUSEZ JAMAIS UNE TRADUCTION ET NE RENVOYEZ JAMAIS D'ERREUR À CAUSE DE FAUTES D'ORTHOGRAPHE.
+- Effectuez directement la traduction du sens déduit et corrigé.
+- S'il y avait une faute d'orthographe ou de frappe notable dans le texte d'origine, remplissez le champ "detectedCorrection" avec la version d'origine correctement orthographiée en français (ou en créole). Si aucune faute notable n'est présente, laissez ce champ vide ("").
+
+RÈGLE D'OR #2 : NE JAMAIS CONFONDRE LE CRÉOLE GUADELOUPÉEN ET LE CRÉOLE MARTINICAIN !
 Distinctions lexicales et grammaticales majeures à respecter impérativement :
 - Chose / Objet / Affaire : Utiliser "biten" ou "zafè" (Guadeloupe) et JAMAIS "bagay" (Martinique).
 - Possessifs postposés : Utiliser la préposition "an" ou "a" : "loto an mwen", "kaz a'w", "zanmi a'y" (Guadeloupe) et JAMAIS la possession directe sans particule comme "loto mwen" ou "maman i" (Martinique).
@@ -71,7 +78,8 @@ Règles impératives de traduction :
 Retournez STRICTEMENT un objet JSON valide correspondant au schéma demandé :
 {
   "translation": "La traduction exacte en Créole Guadeloupéen",
-  "grammaticalNotes": "Explication brève et pédagogique des choix grammaticaux et marqueurs utilisés (ex: 'Utilisation de biten au lieu de bagay (spécifique Guadeloupe), du marqueur ka pour le présent continu et du possessif postposé an mwen')",
+  "detectedCorrection": "La phrase source corrigée s'il y avait des fautes/coquilles d'orthographe, sinon une chaîne vide",
+  "grammaticalNotes": "Explication brève et pédagogique des choix grammaticaux et des mots de la traduction",
   "wordBreakdown": [
     { "source": "mot/groupe source", "target": "mot/groupe cible", "explanation": "rôle grammatical ou sens" }
   ],
@@ -133,10 +141,11 @@ app.post("/api/translate", async (req, res) => {
     const prompt = `Traduisez le texte suivant ${direction} :
 "${text.trim()}"
 
-Fournissez une traduction exacte respectant parfaitement la grammaire et l'orthographe GEREC du créole guadeloupéen.
-Rappel des directions :
-- Source : ${sourceLang === "fr" ? "Français" : "Créole Guadeloupéen"}
-- Cible : ${targetLang === "gcr" ? "Créole Guadeloupéen (GEREC)" : "Français"}`;
+Rappels importants :
+1. Si le texte contient des fautes d'orthographe, de frappe ou des erreurs, déduisez ce que l'utilisateur a voulu dire et traduisez la pensée corrigée.
+2. Ne bloquez jamais et ne renvoyez jamais d'erreur.
+3. Remplissez "detectedCorrection" avec la phrase corrigée s'il y avait une faute dans la saisie.
+4. Assurez une traduction parfaite en Créole Guadeloupéen (GEREC) respectant la grammaire de Guadeloupe.`;
 
     const response = await generateContentWithRetry({
       models: ["gemini-3.6-flash", "gemini-2.5-flash"],
@@ -150,6 +159,10 @@ Rappel des directions :
             translation: {
               type: Type.STRING,
               description: "Le texte traduit",
+            },
+            detectedCorrection: {
+              type: Type.STRING,
+              description: "Correction de l'orthographe source si applicable",
             },
             grammaticalNotes: {
               type: Type.STRING,
@@ -196,6 +209,7 @@ Rappel des directions :
       console.warn("Échec du parse JSON strict, fallback sur extraction:", parseErr);
       parsedData = {
         translation: resultText.trim(),
+        detectedCorrection: "",
         grammaticalNotes: "Traduction effectuée selon la grammaire du Créole Guadeloupéen.",
         wordBreakdown: [],
         alternativeExpressions: [],
@@ -203,7 +217,7 @@ Rappel des directions :
     }
 
     // Ensure object structure integrity
-    if (!parsedData.translation) {
+    if (!parsedData.translation || typeof parsedData.translation !== "string") {
       parsedData.translation = typeof parsedData === "string" ? parsedData : resultText;
     }
     if (!parsedData.grammaticalNotes) {
@@ -214,6 +228,9 @@ Rappel des directions :
     }
     if (!Array.isArray(parsedData.alternativeExpressions)) {
       parsedData.alternativeExpressions = [];
+    }
+    if (typeof parsedData.detectedCorrection !== "string") {
+      parsedData.detectedCorrection = "";
     }
 
     res.json({

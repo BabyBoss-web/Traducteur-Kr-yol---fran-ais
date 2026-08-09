@@ -1,5 +1,5 @@
 import React from "react";
-import { BookOpen, Sparkles, HelpCircle } from "lucide-react";
+import { BookOpen, Sparkles, CheckCircle2 } from "lucide-react";
 import { TranslationResult } from "../types";
 
 interface GrammarBreakdownProps {
@@ -7,12 +7,23 @@ interface GrammarBreakdownProps {
 }
 
 export const GrammarBreakdown: React.FC<GrammarBreakdownProps> = ({ result }) => {
-  if (!result || (!result.grammaticalNotes && !result.wordBreakdown?.length)) {
+  if (!result || (!result.grammaticalNotes && !result.wordBreakdown?.length && !result.detectedCorrection)) {
     return null;
   }
 
   return (
     <div className="mt-4 bg-slate-900/90 border border-teal-500/30 rounded-xl p-4 text-slate-200 text-sm shadow-lg space-y-3.5">
+      {/* Auto correction notice */}
+      {result.detectedCorrection && (
+        <div className="bg-emerald-950/60 border border-emerald-500/40 rounded-lg p-3 flex items-start gap-2.5 text-emerald-200">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
+          <div className="text-xs">
+            <span className="font-semibold text-emerald-300">Intention déduite (Correction d'orthographe/frappe) :</span>{" "}
+            <span className="italic font-medium text-white">"{result.detectedCorrection}"</span>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="flex items-center gap-2 text-teal-300 font-semibold border-b border-slate-800 pb-2">
         <BookOpen className="w-4 h-4 text-teal-400" />
