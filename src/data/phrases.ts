@@ -1,0 +1,65 @@
+import { PhraseCategory } from "../types";
+
+export const PHRASE_CATEGORIES: PhraseCategory[] = [
+  {
+    id: "salutations",
+    name: "Salutations & Courtoisie",
+    icon: "MessageSquare",
+    phrases: [
+      { fr: "Bonjour !", gcr: "Bonjou !", context: "Salutation du matin / journée" },
+      { fr: "Bonsoir !", gcr: "Bonswa !", context: "Salutation du soir" },
+      { fr: "Comment vas-tu ?", gcr: "Ki jan ou yé ?", context: "Demander des nouvelles" },
+      { fr: "Ça va bien, merci !", gcr: "Sa ka maché, mèsi !", context: "Réponse positive" },
+      { fr: "Quelles sont les nouvelles ?", gcr: "Ké novèl ?", context: "Informel / Amical" },
+      { fr: "Tout va bien !", gcr: "Tout biten ka aji !", context: "Expression courante" },
+      { fr: "Merci beaucoup !", gcr: "Mèsi anpil !", context: "Politesse" },
+      { fr: "Au revoir !", gcr: "Ka viré vwè'w !", context: "Départ" },
+      { fr: "À plus tard !", gcr: "A pli ta !", context: "Prendre congé" },
+      { fr: "S'il te plaît / S'il vous plaît", gcr: "Silvouplé / Souplé", context: "Demande polie" },
+      { fr: "Pas de problème !", gcr: "Pani pwoblèm !", context: "Rassurer quelqu'un" },
+      { fr: "Tiens bon / Bon courage !", gcr: "Tjenbé rèd !", context: "Encouragement guadeloupéen" },
+    ],
+  },
+  {
+    id: "quotidien",
+    name: "Vie Quotidienne",
+    icon: "Coffee",
+    phrases: [
+      { fr: "Où vas-tu ?", gcr: "Ki koté ou ka alé ?", context: "Marqueur 'ka' (présent continu)" },
+      { fr: "Je vais à la maison.", gcr: "Mwen ka alé a kaz-la.", context: "Article postposé '-la'" },
+      { fr: "Qu'est-ce que tu fais ?", gcr: "Sa ou ka fè ?", context: "Marqueur 'ka'" },
+      { fr: "Je travaille.", gcr: "Mwen ka travay.", context: "Présent continu" },
+      { fr: "J'ai mangé.", gcr: "Mwen mangé.", context: "Passé accompli (verbe seul)" },
+      { fr: "J'étais en train de lire.", gcr: "Mwen té ka li.", context: "Passé continu ('té ka')" },
+      { fr: "Je viendrai demain.", gcr: "Mwen ké vini dousman / Mwen ké vini demen.", context: "Futur ('ké')" },
+      { fr: "Où est mon ami ?", gcr: "Koté zanmi an mwen yé ?", context: "Possessif postposé 'an mwen'" },
+      { fr: "La maison est grande.", gcr: "Kaz-la gran.", context: "Article postposé '-la'" },
+      { fr: "Donne-moi un peu d'eau.", gcr: "Ba mwen tibwen dlo.", context: "Demander de l'eau" },
+    ],
+  },
+  {
+    id: "marche_resto",
+    name: "Marché & Restauration",
+    icon: "ShoppingBag",
+    phrases: [
+      { fr: "Combien ça coûte ?", gcr: "Kombien sa ka kouté ?", context: "Prix" },
+      { fr: "C'est très bon !", gcr: "Sa té ka gou anpil ! / Sa dous !", context: "Appréciation repas" },
+      { fr: "Je voudrais du poisson frais.", gcr: "Mwen té ké vlé pwoson fré.", context: "Conditionnel 'té ké'" },
+      { fr: "Avez-vous du piment ?", gcr: "Ès zò ni piman ?", context: "Question" },
+      { fr: "Un sorbet coco s'il vous plaît !", gcr: "Yon sorbé koko silvouplé !", context: "Spécialité locale" },
+      { fr: "C'est chaud !", gcr: "Sa cho !", context: "Température" },
+    ],
+  },
+  {
+    id: "proverbes",
+    name: "Proverbes & Expressions",
+    icon: "Sparkles",
+    phrases: [
+      { fr: "Petit à petit l'oiseau fait son nid.", gcr: "Dousman sé dousman ki ka kondui kabrit a larivyè.", context: "Sagesse créole" },
+      { fr: "Il n'y a pas de rose sans épines.", gcr: "Pani wòz san pikan.", context: "Proverbe" },
+      { fr: "La nuit porte conseil.", gcr: "Lannwit sé manman konsey.", context: "Proverbe" },
+      { fr: "Prends ton temps, pas de précipitation.", gcr: "An dousè, pa tchoulé sézi.", context: "Sagesse locale" },
+      { fr: "Rien ne sert de courir.", gcr: "Pa kouri avan ou sav maché.", context: "Proverbe" },
+    ],
+  },
+];
