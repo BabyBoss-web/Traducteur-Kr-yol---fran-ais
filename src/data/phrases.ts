@@ -51,6 +51,18 @@ export const PHRASE_CATEGORIES: PhraseCategory[] = [
     ],
   },
   {
+    id: "sentiments",
+    name: "Sentiments & Amour",
+    icon: "Heart",
+    phrases: [
+      { fr: "Tu es l'amour de ma vie.", gcr: "Ou sé lanmou a lavi an mwen.", context: "Expression sentimentale guadeloupéenne (possessif 'an mwen')" },
+      { fr: "Je t'aime de tout mon cœur.", gcr: "Mwen enmé'w épi tout kè an mwen.", context: "Déclaration d'amour" },
+      { fr: "Tu me manques beaucoup.", gcr: "Ou ka manké mwen anpil.", context: "Sentiment" },
+      { fr: "Mon amour / Ma chérie", gcr: "Doudou an mwen / Lanmou an mwen", context: "Mots doux" },
+      { fr: "Tu es magnifique !", gcr: "Ou bel toubannman !", context: "Compliment" },
+    ],
+  },
+  {
     id: "proverbes",
     name: "Proverbes & Expressions",
     icon: "Sparkles",

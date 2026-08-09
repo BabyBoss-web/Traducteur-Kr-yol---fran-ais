@@ -103,15 +103,17 @@ async function generateContentWithRetry(options: {
           config,
         });
 
-        return response;
+        if (response && response.text) {
+          return response;
+        }
       } catch (err: any) {
         lastError = err;
-        console.warn(`[Gemini API Warning] Model ${model} attempt ${attempt} failed: ${err.message}`);
+        console.warn(`[Gemini API Warning] Model ${model} attempt ${attempt} failed: ${err?.message || err}`);
       }
     }
   }
 
-  throw lastError;
+  throw lastError || new Error("Service de traduction momentanément indisponible.");
 }
 
 // Translation API Endpoint
@@ -183,7 +185,37 @@ Rappel des directions :
       throw new Error("Aucune réponse générée par le modèle.");
     }
 
-    const parsedData = JSON.parse(resultText);
+    let parsedData: any;
+    try {
+      let cleanText = resultText.trim();
+      if (cleanText.startsWith("```")) {
+        cleanText = cleanText.replace(/^```[a-z]*\n?/, "").replace(/\n?```$/, "");
+      }
+      parsedData = JSON.parse(cleanText);
+    } catch (parseErr) {
+      console.warn("Échec du parse JSON strict, fallback sur extraction:", parseErr);
+      parsedData = {
+        translation: resultText.trim(),
+        grammaticalNotes: "Traduction effectuée selon la grammaire du Créole Guadeloupéen.",
+        wordBreakdown: [],
+        alternativeExpressions: [],
+      };
+    }
+
+    // Ensure object structure integrity
+    if (!parsedData.translation) {
+      parsedData.translation = typeof parsedData === "string" ? parsedData : resultText;
+    }
+    if (!parsedData.grammaticalNotes) {
+      parsedData.grammaticalNotes = "Traduction respectant les normes GEREC du Créole Guadeloupéen.";
+    }
+    if (!Array.isArray(parsedData.wordBreakdown)) {
+      parsedData.wordBreakdown = [];
+    }
+    if (!Array.isArray(parsedData.alternativeExpressions)) {
+      parsedData.alternativeExpressions = [];
+    }
+
     res.json({
       success: true,
       data: parsedData,

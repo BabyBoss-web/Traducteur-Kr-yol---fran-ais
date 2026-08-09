@@ -55,16 +55,18 @@ export default function App() {
 
   // Check offline dictionary for quick matches
   const checkOfflineDictionary = (text: string, src: Language): TranslationResult | null => {
-    const cleanText = text.trim().toLowerCase();
+    const normalize = (s: string) => s.trim().toLowerCase().replace(/[.,!?]+$/, "");
+    const cleanText = normalize(text);
+
     for (const cat of PHRASE_CATEGORIES) {
       for (const phrase of cat.phrases) {
-        if (src === "fr" && phrase.fr.toLowerCase() === cleanText) {
+        if (src === "fr" && normalize(phrase.fr) === cleanText) {
           return {
             translation: phrase.gcr,
             grammaticalNotes: phrase.context || "Expression courante du créole guadeloupéen",
             wordBreakdown: [{ source: phrase.fr, target: phrase.gcr, explanation: "Expression idiomatique" }],
           };
-        } else if (src === "gcr" && phrase.gcr.toLowerCase() === cleanText) {
+        } else if (src === "gcr" && normalize(phrase.gcr) === cleanText) {
           return {
             translation: phrase.fr,
             grammaticalNotes: phrase.context || "Traduction française directe",
