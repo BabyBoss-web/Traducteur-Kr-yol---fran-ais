@@ -1,10 +1,11 @@
 import React from "react";
-import { BookOpen, History, Sparkles, HelpCircle } from "lucide-react";
+import { BookOpen, History, Sparkles, WifiOff } from "lucide-react";
 
 interface HeaderProps {
   onOpenPhrasebook: () => void;
   onOpenGrammar: () => void;
   onOpenHistory: () => void;
+  onOpenOfflineInfo: () => void;
   historyCount: number;
 }
 
@@ -12,6 +13,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenPhrasebook,
   onOpenGrammar,
   onOpenHistory,
+  onOpenOfflineInfo,
   historyCount,
 }) => {
   return (
@@ -37,6 +39,15 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-1 sm:space-x-2">
+          <button
+            onClick={onOpenOfflineInfo}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-slate-800 transition-colors border border-emerald-500/20 bg-emerald-500/10"
+            title="Informations & Fonctionnement du Mode Hors-Ligne"
+          >
+            <WifiOff className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="hidden md:inline">Mode Hors-ligne</span>
+          </button>
+
           <button
             onClick={onOpenPhrasebook}
             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 transition-colors"
