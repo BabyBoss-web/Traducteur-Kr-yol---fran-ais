@@ -1,11 +1,12 @@
 import React from "react";
-import { BookOpen, History, Sparkles, WifiOff } from "lucide-react";
+import { BookOpen, History, Sparkles, WifiOff, Download } from "lucide-react";
 
 interface HeaderProps {
   onOpenPhrasebook: () => void;
   onOpenGrammar: () => void;
   onOpenHistory: () => void;
   onOpenOfflineInfo: () => void;
+  onOpenInstallApp: () => void;
   historyCount: number;
 }
 
@@ -14,6 +15,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenGrammar,
   onOpenHistory,
   onOpenOfflineInfo,
+  onOpenInstallApp,
   historyCount,
 }) => {
   return (
@@ -39,6 +41,16 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center space-x-1 sm:space-x-2">
+          <button
+            onClick={onOpenInstallApp}
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold rounded-lg bg-teal-500/20 hover:bg-teal-500/30 text-teal-300 border border-teal-500/40 transition-colors shadow-sm"
+            title="Télécharger / Installer l'application sur PC ou Téléphone"
+          >
+            <Download className="w-3.5 h-3.5 text-teal-400 animate-pulse" />
+            <span className="hidden lg:inline">Télécharger L'App</span>
+            <span className="lg:hidden">App</span>
+          </button>
+
           <button
             onClick={onOpenOfflineInfo}
             className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-medium rounded-lg text-emerald-400 hover:text-emerald-300 hover:bg-slate-800 transition-colors border border-emerald-500/20 bg-emerald-500/10"
@@ -84,3 +96,4 @@ export const Header: React.FC<HeaderProps> = ({
     </header>
   );
 };
+

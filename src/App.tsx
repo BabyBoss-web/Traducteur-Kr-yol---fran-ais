@@ -6,6 +6,7 @@ import { PhrasebookModal } from "./components/PhrasebookModal";
 import { GrammarModal } from "./components/GrammarModal";
 import { HistoryModal } from "./components/HistoryModal";
 import { OfflineInfoModal } from "./components/OfflineInfoModal";
+import { InstallAppModal } from "./components/InstallAppModal";
 import { Toast } from "./components/Toast";
 import { Language, TranslationResult, TranslationHistoryItem } from "./types";
 import { PHRASE_CATEGORIES } from "./data/phrases";
@@ -26,6 +27,47 @@ export default function App() {
   const [isGrammarOpen, setIsGrammarOpen] = useState<boolean>(false);
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
   const [isOfflineInfoOpen, setIsOfflineInfoOpen] = useState<boolean>(false);
+  const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
+
+  // PWA installation prompt state
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isStandalone, setIsStandalone] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Check if running as installed standalone PWA
+    const checkStandalone = () => {
+      const isStandaloneMode =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        (window.navigator as any).standalone ||
+        document.referrer.includes("android-app://");
+      setIsStandalone(!!isStandaloneMode);
+    };
+    checkStandalone();
+
+    // Listen for beforeinstallprompt
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    return () => {
+      window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
+    };
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const choiceResult = await deferredPrompt.userChoice;
+      if (choiceResult.outcome === "accepted") {
+        showToast("Installation de l'application lancée !");
+        setDeferredPrompt(null);
+        setIsInstallModalOpen(false);
+      }
+    }
+  };
+
 
   // History state with LocalStorage
   const [history, setHistory] = useState<TranslationHistoryItem[]>(() => {
@@ -235,6 +277,7 @@ export default function App() {
         onOpenGrammar={() => setIsGrammarOpen(true)}
         onOpenHistory={() => setIsHistoryOpen(true)}
         onOpenOfflineInfo={() => setIsOfflineInfoOpen(true)}
+        onOpenInstallApp={() => setIsInstallModalOpen(true)}
         historyCount={history.length}
       />
 
@@ -356,6 +399,14 @@ export default function App() {
         isOpen={isOfflineInfoOpen}
         onClose={() => setIsOfflineInfoOpen(false)}
         onOpenPhrasebook={() => setIsPhrasebookOpen(true)}
+      />
+
+      <InstallAppModal
+        isOpen={isInstallModalOpen}
+        onClose={() => setIsInstallModalOpen(false)}
+        deferredPrompt={deferredPrompt}
+        onInstallClick={handleInstallClick}
+        isStandalone={isStandalone}
       />
 
       {/* Toast Notification */}
