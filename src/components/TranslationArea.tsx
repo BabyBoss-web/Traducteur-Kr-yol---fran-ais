@@ -237,22 +237,24 @@ export const TranslationArea: React.FC<TranslationAreaProps> = ({
                 }`}>
                   {sourceLang === "fr" ? "Français" : "Créole Guadeloupéen"}
                 </span>
-                <button
-                  type="button"
-                  onClick={() => setShowKeyboard(!showKeyboard)}
-                  aria-expanded={showKeyboard}
-                  aria-label="Afficher ou masquer la barre d'accents créoles"
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-lg transition-all border ${
-                    showKeyboard
-                      ? "bg-amber-500/20 text-amber-500 border-amber-500/30"
-                      : isLight
-                      ? "bg-slate-100 text-slate-600 border-slate-200"
-                      : "bg-slate-800 text-slate-400 border-slate-700"
-                  }`}
-                  title="Afficher/Masquer le clavier créole"
-                >
-                  Klavyé Kréyòl
-                </button>
+                {sourceLang === "gcr" && (
+                  <button
+                    type="button"
+                    onClick={() => setShowKeyboard(!showKeyboard)}
+                    aria-expanded={showKeyboard}
+                    aria-label="Afficher ou masquer la barre d'accents créoles"
+                    className={`text-[10px] font-bold px-2 py-0.5 rounded-lg transition-all border ${
+                      showKeyboard
+                        ? "bg-amber-500/20 text-amber-500 border-amber-500/30"
+                        : isLight
+                        ? "bg-slate-100 text-slate-600 border-slate-200"
+                        : "bg-slate-800 text-slate-400 border-slate-700"
+                    }`}
+                    title="Afficher/Masquer le clavier créole"
+                  >
+                    Klavyé Kréyòl
+                  </button>
+                )}
               </div>
 
               <div className="flex items-center gap-1.5">
@@ -289,8 +291,8 @@ export const TranslationArea: React.FC<TranslationAreaProps> = ({
               </div>
             </div>
 
-            {/* Klavyé Kréyòl (Virtual Creole Accent Bar) */}
-            {showKeyboard && (
+            {/* Klavyé Kréyòl (Virtual Creole Accent Bar) - Only displayed when entering Creole */}
+            {sourceLang === "gcr" && showKeyboard && (
               <div
                 role="group"
                 aria-label="Clavier d'accents créoles"
