@@ -191,15 +191,16 @@ export default function App() {
 
         if (resData.success && resData.data) {
           const result: TranslationResult = resData.data;
-          setTranslatedText(result.translation || trimmed);
+          const finalTranslation = result.translation || trimmed;
+          setTranslatedText(finalTranslation);
           setTranslationResult(result);
 
-          addToHistory(trimmed, result.translation || trimmed, srcLang, tgtLang, result);
+          addToHistory(trimmed, finalTranslation, srcLang, tgtLang, result);
         } else {
-          // Fallback if API returned non-success response
+          // Graceful fallback if API responds with non-success
           const fallbackResult: TranslationResult = {
             translation: trimmed,
-            grammaticalNotes: "Mot ou expression conservé en l'état.",
+            grammaticalNotes: "Terme ou expression conservé en l'état.",
             wordBreakdown: [{ source: trimmed, target: trimmed, explanation: "Conservation du mot" }],
           };
           setTranslatedText(trimmed);
@@ -207,10 +208,10 @@ export default function App() {
         }
       } catch (error: any) {
         console.error("Translation error fallback:", error);
-        // Fallback to displaying the entered text as-is if network or server fails
+        // Fallback to displaying entered text as-is if network or server fails
         const fallbackResult: TranslationResult = {
           translation: trimmed,
-          grammaticalNotes: "Mot ou expression conservé en l'état.",
+          grammaticalNotes: "Terme ou expression conservé en l'état.",
           wordBreakdown: [{ source: trimmed, target: trimmed, explanation: "Conservation du mot" }],
         };
         setTranslatedText(trimmed);
@@ -234,7 +235,7 @@ export default function App() {
 
     const timer = setTimeout(() => {
       handleTranslate(sourceText, sourceLang, targetLang);
-    }, 350);
+    }, 500);
 
     return () => clearTimeout(timer);
   }, [sourceText, sourceLang, targetLang, handleTranslate]);

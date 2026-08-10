@@ -21,75 +21,36 @@ const ai = new GoogleGenAI({
   },
 });
 
-const CREOLE_SYSTEM_INSTRUCTION = `Vous êtes un traducteur expert diplômé en linguistique créole, spécialisé EXCLUSIVEMENT dans le Créole Guadeloupéen (kréyol gwadloupéyen) et le Français.
-Votre rôle est de fournir des traductions ultra-précises, naturelles et parfaitement conformes à l'orthographe officielle GEREC (Groupe d'Études et de Recherches en Espace Créolophone) et aux règles de la grammaire créole de Guadeloupe.
+const CREOLE_SYSTEM_INSTRUCTION = `Vous êtes un moteur de traduction automatique de pointe, fonctionnant exactement à la manière de Google Traduction, spécialisé dans la traduction entre le Français et le Créole Guadeloupéen (kréyol gwadloupéyen - orthographe GEREC).
 
-RÈGLE D'OR #1 - COMPRÉHENSION INTELLIGENTE ET TRADUCTION DANS TOUS LES CAS :
-- L'utilisateur peut commettre des fautes d'orthographe, des coquilles de frappe, des abréviations, taper des mots inventés, du jargon, des noms propres ou des mots rares.
-- VOUS DEVEZ TRADUIRE DANS TOUS LES CAS, QUEL QUE SOIT LE MOT ÉCRIT.
-- Ne refusez JAMAIS une traduction et ne renvoyez JAMAIS de message d'erreur du type "Je ne peux pas traduire".
-- Si un mot ou une expression n'a pas de traduction directe en créole (ou en français), adaptez-le selon la phonétique GEREC ou conservez le mot tel quel dans la phrase traduite.
-- S'il y avait une faute d'orthographe ou de frappe dans le texte d'origine, remplissez "detectedCorrection" avec la version corrigée. Si aucune faute n'est présente, laissez ce champ vide ("").
+DIRECTIVES ABSOLUES DE GOOGLE TRADUCTION :
+1. TRADUCTION SYSTÉMATIQUE DANS 100% DES CAS :
+   - Vous devez OBLIGATOIREMENT fournir une traduction pour TOUT texte ou mot saisi, sans aucune exception.
+   - Ne dites JAMAIS "Je ne peux pas traduire", "Saisie invalide" ou "Désolé".
+   - Si un mot est un nom propre, une marque, un code, un mot inventé ou un terme technique sans équivalent direct, conservez-le tel quel ou adaptez-le phonétiquement dans la phrase traduite (exactement comme le fait Google Traduction).
 
-RÈGLE D'OR #2 : NE JAMAIS CONFONDRE LE CRÉOLE GUADELOUPÉEN ET LE CRÉOLE MARTINICAIN !
-Distinctions lexicales et grammaticales majeures à respecter impérativement :
-- Chose / Objet / Affaire : Utiliser "biten" ou "zafè" (Guadeloupe) et JAMAIS "bagay" (Martinique).
-- Possessifs postposés : Utiliser la préposition "an" ou "a" : "loto an mwen", "kaz a'w", "zanmi a'y" (Guadeloupe) et JAMAIS la possession directe sans particule comme "loto mwen" ou "maman i" (Martinique).
-- Vouloir : Utiliser "vlé" (Guadeloupe) et JAMAIS "lé" (Martinique).
-- Pouvoir : Utiliser "pé" (Guadeloupe).
-- Futur : Utiliser "ké" ou "kay" + verbe (Guadeloupe).
-- Petit / Un peu : Utiliser "ti", "tibwen", "tigout" (Guadeloupe) et JAMAIS "tibren" (Martinique).
-- Aller : Utiliser "a" ou "alé" (Guadeloupe).
-- Les expressions typiques de Guadeloupe : "Tout biten ka aji !", "Ké novèl ?", "A pa ti bon !", "Tjenbé rèd pa molli !", "An dousè !".
+2. COMPRÉHENSION INTELLIGENTE DES FAUTES (SUGGESTION À LA GOOGLE TRADUCTION) :
+   - Si la saisie contient des fautes de frappe, d'orthographe, du langage SMS ou de la phonétique approximative, déduisez immédiatement l'intention réelle de l'utilisateur.
+   - Traduisez la pensée corrigée et renseignez "detectedCorrection" avec la version source correctement orthographiée (ex: si l'utilisateur écrit "je teme", traduisez "mwen enmen'w" et mettez "je t'aime" dans detectedCorrection).
 
-Règles impératives de traduction :
-1. ORTHOGRAPHE GEREC STRICTE :
-   - Pas de lettres "c", "q", "x", "w" inutile (sauf dans les digrammes créoles comme "ou", "ch", "dj", "tj", "ny").
-   - Utiliser "k" pour le son /k/ (ex: "kaz", "koko", "ki jan").
-   - Utiliser "z" pour le son /z/ et "s" pour le son /s/ (ex: "sakasaka", "masikay").
-   - Utiliser "è" (open e) et "ò" (open o) quand nécessaire (ex: "frè", "sòti", "alò").
-   - Digrammes spécifiques : "dj" (djigidji), "tj" (tjenbé), "ny" (monyen).
-
-2. MARQUEURS VERBAUX DU CRÉOLE GUADELOUPÉEN :
-   - Présent continu / habituel ("en train de", "fait habituellement") : "ka" + verbe (ex: "Mwen ka travay", "I ka dormi").
-   - Passé accompli ("a fait", "a terminé") : verbe seul sans marqueur (ex: "Mwen travay", "Yo pati", "An mangé").
-   - Passé continu ("était en train de") : "té ka" + verbe (ex: "Mwen té ka li yon liv").
-   - Passé révolu / antérieur : "té" + verbe (ex: "Mwen té di'w").
-   - Futur / Intention ("va", "fera") : "ké" ou "kay" + verbe (ex: "An ké vini", "Yo kay fè fèt").
-   - Conditionnel : "té ké" + verbe (ex: "Si mwen té sav, an té ké vini").
-
-3. ARTICLES ET POSSESSIFS POSTPOSÉS (SPÉCIFICITÉ GUADELOUPE) :
-   - L'article défini se place TOUJOURS APRÈS le nom avec un trait d'union :
-     - -la (ex: "la maison" = "kaz-la", "le livre" = "liv-la")
-     - -lan / -an après nasale (ex: "le pain" = "pen-nan" / "pen-an")
-     - -yo pour le pluriel ("les maisons" = "kaz-yo", "les enfants" = "timoun-yo")
-   - Les adjectifs possessifs se placent APRÈS le nom avec particule "an" / "a" :
-     - "mon/ma/mes" = [nom] + "an mwen" / "mwen" (ex: "mon ami" = "zanmi an mwen", "ma maison" = "kaz an mwen")
-     - "ton/ta/tes" = [nom] + "a'w" / "ou" (ex: "ton frère" = "frè a'w")
-     - "son/sa/ses" = [nom] + "a'y" / "i" (ex: "son père" = "papa a'y")
-     - "notre/nos" = [nom] + "an nou" / "nou"
-     - "votre/vos" = [nom] + "a zòt" / "zò"
-     - "leur/leurs" = [nom] + "a yo" / "yo"
-
-4. TON ET EXPRESSIONS NATURELLES DE GUADELOUPE :
-   - Adaptez le ton pour qu'il soit authentique et parlé en Guadeloupe.
-   - Préservez les salutations et interjections locales ("Bonjou", "Ké novèl ?", "A pa ti bon !", "Pani pwoblèm", "Sa ka maché", "An dousè", "Tjenbé rèd").
-
-5. REGISTRE ET NUANCES DE LANGUE :
-   - Indiquez le registre de langue de la traduction ("Courant", "Traditionnel / Ancien", "Familier", "Formel", "Proverbe / Image", "Littéraire").
-   - Fournissez une explication brève et nuancée du contexte d'usage ("registerExplanation").
+3. DIALECTE GUADELOUPÉEN STRICT (GEREC) :
+   - Utilisez exclusivement la grammaire et le lexique de Guadeloupe :
+     - Chose/Objet = "biten" ou "zafè" (JAMAIS "bagay").
+     - Possessifs postposés avec "an"/"a" = "kaz an mwen", "frè a'w", "papa a'y".
+     - Marqueurs verbraux : "ka" (présent/habitude), verbe seul (passé), "ké"/"kay" (futur), "té" (passé antérieur), "té ka" (imparfait).
+     - Expressions locales : "Tout biten ka aji !", "Ké novèl ?", "A pa ti bon !", "Tjenbé rèd pa molli !", "An dousè !".
 
 Retournez STRICTEMENT un objet JSON valide correspondant au schéma demandé :
 {
-  "translation": "La traduction exacte en Créole Guadeloupéen",
-  "detectedCorrection": "La phrase source corrigée s'il y avait des fautes/coquilles d'orthographe, sinon une chaîne vide",
-  "grammaticalNotes": "Explication brève et pédagogique des choix grammaticaux et des mots de la traduction",
+  "translation": "La traduction exacte ou adaptée (Style Google Traduction)",
+  "detectedCorrection": "La phrase source corrigée s'il y avait une faute d'orthographe/frappe, sinon chaîne vide",
+  "grammaticalNotes": "Explication brève des choix de traduction",
   "wordBreakdown": [
-    { "source": "mot/groupe source", "target": "mot/groupe cible", "explanation": "rôle grammatical ou sens" }
+    { "source": "mot source", "target": "mot cible", "explanation": "sens ou rôle" }
   ],
-  "alternativeExpressions": ["Alternative 1 ou tournure plus familière/imagée si applicable"],
+  "alternativeExpressions": ["Formulation alternative courante si utile"],
   "expressionRegister": "Courant | Traditionnel / Ancien | Familier | Formel | Proverbe / Image",
-  "registerExplanation": "Brève précision sur l'ancienneté, le registre de langue ou le contexte d'utilisation"
+  "registerExplanation": "Précision sur le registre ou contexte"
 }`;
 
 // Helper function for resilient Gemini API calls with retries and fallback models
@@ -99,14 +60,14 @@ async function generateContentWithRetry(options: {
   config: any;
   maxRetriesPerModel?: number;
 }) {
-  const { models, contents, config, maxRetriesPerModel = 2 } = options;
+  const { models, contents, config, maxRetriesPerModel = 1 } = options;
   let lastError: any;
 
   for (const model of models) {
     for (let attempt = 0; attempt <= maxRetriesPerModel; attempt++) {
       try {
         if (attempt > 0) {
-          const delay = Math.pow(2, attempt) * 500 + Math.random() * 200;
+          const delay = Math.pow(2, attempt) * 400 + Math.random() * 100;
           console.log(`[Retry] Retrying model ${model}, attempt ${attempt}...`);
           await new Promise((resolve) => setTimeout(resolve, delay));
         }
@@ -122,7 +83,19 @@ async function generateContentWithRetry(options: {
         }
       } catch (err: any) {
         lastError = err;
-        console.warn(`[Gemini API Warning] Model ${model} attempt ${attempt} failed: ${err?.message || err}`);
+        const errMsg = String(err?.message || err);
+        const isQuotaError =
+          err?.status === 429 ||
+          errMsg.includes("429") ||
+          errMsg.includes("RESOURCE_EXHAUSTED") ||
+          errMsg.includes("quota");
+
+        if (isQuotaError) {
+          console.warn(`[Gemini API Quota Exceeded] Model ${model} rate-limited/exhausted. Switching to next model...`);
+          break; // Switch to fallback model immediately on 429
+        }
+
+        console.warn(`[Gemini API Warning] Model ${model} attempt ${attempt} failed: ${errMsg}`);
       }
     }
   }
@@ -148,13 +121,13 @@ app.post("/api/translate", async (req, res) => {
 "${text.trim()}"
 
 Rappels impératifs pour garantir la traduction dans 100% des cas :
-1. Traduisez QUEL QUE SOIT le mot écrit (mot inventé, nom propre, jargon, argot, abréviation, faute de frappe).
-2. Si un mot ou une expression est réellement impossible à traduire (ex: nom propre, marque, mot inédit), conservez ce mot tel quel dans la phrase sans jamais bloquer ni refuser.
+1. Traduisez QUEL QUE SOIT le mot écrit (mot inventé, nom propre, jargon, argot, abréviation, faute de frappe, etc.).
+2. Si un mot ou une expression est réellement impossible à traduire (ex: nom propre, marque, terme technique inédit), conservez ce mot tel quel dans la phrase sans jamais bloquer ni refuser.
 3. Si le texte d'origine contient des fautes, déduisez l'intention et remplissez "detectedCorrection" avec le texte corrigé.
 4. Fournissez toujours une traduction fluide et adaptée en Créole Guadeloupéen (GEREC) ou en Français selon la direction.`;
 
     const response = await generateContentWithRetry({
-      models: ["gemini-3.6-flash", "gemini-2.5-flash"],
+      models: ["gemini-3.6-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"],
       contents: prompt,
       config: {
         systemInstruction: CREOLE_SYSTEM_INSTRUCTION,
@@ -252,7 +225,7 @@ Rappels impératifs pour garantir la traduction dans 100% des cas :
       data: parsedData,
     });
   } catch (error: any) {
-    console.error("Erreur API de traduction, utilisation du secours instantané:", error);
+    console.error("Erreur de traduction API - secours automatique:", error);
     const fallbackText = req.body?.text ? String(req.body.text).trim() : "";
     res.json({
       success: true,
@@ -261,7 +234,7 @@ Rappels impératifs pour garantir la traduction dans 100% des cas :
         detectedCorrection: "",
         grammaticalNotes: "Terme ou expression conservé tel quel.",
         wordBreakdown: fallbackText
-          ? [{ source: fallbackText, target: fallbackText, explanation: "Conservation du mot d'origine" }]
+          ? [{ source: fallbackText, target: fallbackText, explanation: "Mot d'origine conservé" }]
           : [],
         alternativeExpressions: [],
         expressionRegister: "Courant",
