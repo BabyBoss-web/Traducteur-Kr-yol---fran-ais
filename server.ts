@@ -127,7 +127,7 @@ Rappels impératifs pour garantir la traduction dans 100% des cas :
 4. Fournissez toujours une traduction fluide et adaptée en Créole Guadeloupéen (GEREC) ou en Français selon la direction.`;
 
     const response = await generateContentWithRetry({
-      models: ["gemini-3.6-flash", "gemini-3.1-flash-lite", "gemini-flash-latest"],
+      models: ["gemini-3.6-flash", "gemini-3.1-flash-lite"],
       contents: prompt,
       config: {
         systemInstruction: CREOLE_SYSTEM_INSTRUCTION,
@@ -258,7 +258,7 @@ app.post("/api/tts", async (req, res) => {
       : `Prononcez la phrase suivante en français de manière claire et naturelle : "${text}"`;
 
     const response = await generateContentWithRetry({
-      models: ["gemini-3.1-flash-tts-preview"],
+      models: ["gemini-3.1-flash-tts-preview", "gemini-3.6-flash"],
       contents: [{ parts: [{ text: promptText }] }],
       config: {
         responseModalities: ["AUDIO"],
