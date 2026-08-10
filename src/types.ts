@@ -4,6 +4,8 @@ export interface WordBreakdownItem {
   source: string;
   target: string;
   explanation?: string;
+  register?: string;
+  registerExplanation?: string;
 }
 
 export interface TranslationResult {
@@ -12,6 +14,8 @@ export interface TranslationResult {
   wordBreakdown: WordBreakdownItem[];
   alternativeExpressions?: string[];
   detectedCorrection?: string;
+  expressionRegister?: string;
+  registerExplanation?: string;
 }
 
 export interface TranslationHistoryItem {
@@ -25,6 +29,8 @@ export interface TranslationHistoryItem {
   grammaticalNotes?: string;
   wordBreakdown?: WordBreakdownItem[];
   detectedCorrection?: string;
+  expressionRegister?: string;
+  registerExplanation?: string;
 }
 
 export interface PhraseCategory {

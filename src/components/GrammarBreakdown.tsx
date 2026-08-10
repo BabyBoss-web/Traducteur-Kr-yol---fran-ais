@@ -1,6 +1,7 @@
 import React from "react";
 import { BookOpen, Sparkles, CheckCircle2 } from "lucide-react";
 import { TranslationResult } from "../types";
+import { RegisterPopover } from "./RegisterPopover";
 
 interface GrammarBreakdownProps {
   result: TranslationResult;
@@ -25,9 +26,18 @@ export const GrammarBreakdown: React.FC<GrammarBreakdownProps> = ({ result }) =>
       )}
 
       {/* Header */}
-      <div className="flex items-center gap-2 text-teal-300 font-semibold border-b border-slate-800 pb-2">
-        <BookOpen className="w-4 h-4 text-teal-400" />
-        <span>Analyse grammaticale & Orthographe GEREC</span>
+      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div className="flex items-center gap-2 text-teal-300 font-semibold">
+          <BookOpen className="w-4 h-4 text-teal-400" />
+          <span>Analyse grammaticale & Orthographe GEREC</span>
+        </div>
+        {result.expressionRegister && (
+          <RegisterPopover
+            register={result.expressionRegister}
+            explanation={result.registerExplanation}
+            isLight={false}
+          />
+        )}
       </div>
 
       {/* Grammatical notes */}

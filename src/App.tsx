@@ -366,7 +366,7 @@ export default function App() {
                 <div className={`p-2 rounded-xl font-serif text-xs font-bold shrink-0 ${
                   theme === "light" ? "bg-amber-200/80 text-amber-950" : "bg-amber-500/20 text-amber-300"
                 }`}>
-                  Pawòl
+                  Proverbe
                 </div>
                 <div>
                   <p className={`text-xs sm:text-sm font-bold font-serif ${

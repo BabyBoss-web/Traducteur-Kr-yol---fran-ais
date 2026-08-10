@@ -75,6 +75,10 @@ Règles impératives de traduction :
    - Adaptez le ton pour qu'il soit authentique et parlé en Guadeloupe.
    - Préservez les salutations et interjections locales ("Bonjou", "Ké novèl ?", "A pa ti bon !", "Pani pwoblèm", "Sa ka maché", "An dousè", "Tjenbé rèd").
 
+5. REGISTRE ET NUANCES DE LANGUE :
+   - Indiquez le registre de langue de la traduction ("Courant", "Traditionnel / Ancien", "Familier", "Formel", "Proverbe / Image", "Littéraire").
+   - Fournissez une explication brève et nuancée du contexte d'usage ("registerExplanation").
+
 Retournez STRICTEMENT un objet JSON valide correspondant au schéma demandé :
 {
   "translation": "La traduction exacte en Créole Guadeloupéen",
@@ -83,7 +87,9 @@ Retournez STRICTEMENT un objet JSON valide correspondant au schéma demandé :
   "wordBreakdown": [
     { "source": "mot/groupe source", "target": "mot/groupe cible", "explanation": "rôle grammatical ou sens" }
   ],
-  "alternativeExpressions": ["Alternative 1 ou tournure plus familière/imagée si applicable"]
+  "alternativeExpressions": ["Alternative 1 ou tournure plus familière/imagée si applicable"],
+  "expressionRegister": "Courant | Traditionnel / Ancien | Familier | Formel | Proverbe / Image",
+  "registerExplanation": "Brève précision sur l'ancienneté, le registre de langue ou le contexte d'utilisation"
 }`;
 
 // Helper function for resilient Gemini API calls with retries and fallback models
@@ -186,6 +192,14 @@ Rappels importants :
               type: Type.ARRAY,
               items: { type: Type.STRING },
               description: "Autres manières naturelles d'exprimer la même idée",
+            },
+            expressionRegister: {
+              type: Type.STRING,
+              description: "Registre de langue : Courant, Traditionnel / Ancien, Familier, Formel ou Proverbe / Image",
+            },
+            registerExplanation: {
+              type: Type.STRING,
+              description: "Précisions sur l'ancienneté, le registre de langue ou le contexte d'utilisation de l'expression",
             },
           },
           required: ["translation", "grammaticalNotes", "wordBreakdown"],

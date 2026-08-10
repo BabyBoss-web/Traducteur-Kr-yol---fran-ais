@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { Language, TranslationResult } from "../types";
 import { GrammarBreakdown } from "./GrammarBreakdown";
+import { RegisterPopover } from "./RegisterPopover";
 
 interface TranslationAreaProps {
   sourceText: string;
@@ -250,9 +251,9 @@ export const TranslationArea: React.FC<TranslationAreaProps> = ({
                         ? "bg-slate-100 text-slate-600 border-slate-200"
                         : "bg-slate-800 text-slate-400 border-slate-700"
                     }`}
-                    title="Afficher/Masquer le clavier créole"
+                    title="Afficher/Masquer le clavier à caractères créoles"
                   >
-                    Klavyé Kréyòl
+                    Clavier créole
                   </button>
                 )}
               </div>
@@ -475,11 +476,21 @@ export const TranslationArea: React.FC<TranslationAreaProps> = ({
                   </span>
                 </div>
               ) : translatedText ? (
-                <p className={`w-full text-base sm:text-lg leading-relaxed select-text font-bold font-serif ${
-                  isLight ? "text-slate-900" : "text-white"
-                }`}>
-                  {translatedText}
-                </p>
+                <div className="w-full space-y-2">
+                  <div className="flex items-start justify-between gap-2 flex-wrap">
+                    <p className={`text-base sm:text-lg leading-relaxed select-text font-bold font-serif flex-1 ${
+                      isLight ? "text-slate-900" : "text-white"
+                    }`}>
+                      {translatedText}
+                    </p>
+                    <RegisterPopover
+                      register={translationResult?.expressionRegister || "Courant"}
+                      explanation={translationResult?.registerExplanation}
+                      word={translatedText}
+                      isLight={isLight}
+                    />
+                  </div>
+                </div>
               ) : (
                 <div className={`w-full flex items-center justify-center text-sm italic ${
                   isLight ? "text-slate-400" : "text-slate-500"
@@ -559,10 +570,10 @@ export const TranslationArea: React.FC<TranslationAreaProps> = ({
                       ? "bg-white hover:bg-amber-100/60 text-slate-700 border-amber-200"
                       : "bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700"
                   }`}
-                  title="Suggérer une alternative de traduction (Maké Kréyòl)"
+                  title="Suggérer une alternative de traduction ou une amélioration"
                 >
                   <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                  <span className="hidden sm:inline">Maké Kréyòl</span>
+                  <span className="hidden sm:inline">Proposer une amélioration</span>
                 </button>
               )}
 

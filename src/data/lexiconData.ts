@@ -8,6 +8,8 @@ export interface LexiconEntry {
   exampleFr: string;
   audioPronunciation?: string;
   gerecNote?: string;
+  register?: string;
+  registerExplanation?: string;
 }
 
 export const LEXICON_ENTRIES: LexiconEntry[] = [
@@ -86,6 +88,8 @@ export const LEXICON_ENTRIES: LexiconEntry[] = [
     definition: "Formule de politesse et de réassurance très courante.",
     exampleGcr: "Pani pwoblèm, an nou kontinyé !",
     exampleFr: "Pas de problème, continuons !",
+    register: "Courant",
+    registerExplanation: "Expression emblématique de la courtoisie quotidienne antillaise.",
   },
   {
     id: "9",
@@ -95,6 +99,8 @@ export const LEXICON_ENTRIES: LexiconEntry[] = [
     definition: "L'orateur demande si l'auditoire est prêt pour l'histoire.",
     exampleGcr: "Krik ? Moun-la réponn : Krak !",
     exampleFr: "Krik ? L'assemblée répond : Krak !",
+    register: "Traditionnel / Ancien",
+    registerExplanation: "Formule rituelle ancienne issue de la tradition orale des contes créoles antillais.",
   },
   {
     id: "10",

@@ -1,5 +1,5 @@
 {
-  "name": "Traducteur Français - Créole Guadeloupéen",
+  "name": "Traducteur français - créole GWADA",
   "description": "Application de traduction moderne entre le Français et le Créole Guadeloupéen (kréyol gwadloupéyen) avec orthographe GEREC, règles grammaticales et prononciation.",
   "requestFramePermissions": ["microphone"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

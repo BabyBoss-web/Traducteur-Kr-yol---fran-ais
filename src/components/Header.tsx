@@ -87,12 +87,12 @@ export const Header: React.FC<HeaderProps> = ({
                   ? "bg-amber-100/80 hover:bg-amber-200 text-amber-900 border-amber-300"
                   : "bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border-amber-500/30"
               }`}
-              title="Guide d'expressions & Pawòl Gwadloup"
+              title="Guide d'expressions & Proverbes"
               aria-label="Ouvrir le guide d'expressions et proverbes"
             >
               <Sparkles className={`w-4 h-4 ${isLight ? "text-amber-700" : "text-amber-400"}`} />
-              <span className="hidden sm:inline">Pawòl & Expressions</span>
-              <span className="sm:hidden">Pawòl</span>
+              <span className="hidden sm:inline">Expressions & Proverbes</span>
+              <span className="sm:hidden">Guide</span>
             </button>
 
             {/* Theme Switcher Button */}
@@ -270,7 +270,7 @@ export const Header: React.FC<HeaderProps> = ({
                           <Sparkles className="w-4 h-4" />
                         </div>
                         <div>
-                          <p className="text-xs font-bold">Maké Kréyòl (Proposer une amélioration)</p>
+                          <p className="text-xs font-bold">Proposer une amélioration</p>
                           <p className="text-[11px] text-slate-400">Suggérer une nuance ou un ajustement</p>
                         </div>
                       </div>

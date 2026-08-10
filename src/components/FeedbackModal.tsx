@@ -77,9 +77,9 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({
             </div>
             <div>
               <h2 id="feedback-modal-title" className="text-base font-bold flex items-center gap-2">
-                Maké Kréyòl / Contribution
+                Proposer une amélioration / Contribution
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-500 px-2 py-0.5 rounded-full">
-                  Potomitan
+                  GEREC 971
                 </span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">

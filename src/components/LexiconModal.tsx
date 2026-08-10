@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { X, Search, BookOpen, Volume2, Sparkles, Filter } from "lucide-react";
 import { LEXICON_ENTRIES, LexiconEntry } from "../data/lexiconData";
 import { speakWithWebSpeech } from "../utils/speech";
+import { RegisterPopover } from "./RegisterPopover";
 
 interface LexiconModalProps {
   isOpen: boolean;
@@ -76,7 +77,7 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
               <h2 id="lexicon-modal-title" className="text-lg font-bold flex items-center gap-2">
                 Dictionnaire & Lexique GEREC
                 <span className="text-[10px] font-bold uppercase tracking-wider bg-amber-500/20 text-amber-500 border border-amber-500/30 px-2 py-0.5 rounded-full">
-                  Potomitan
+                  GEREC 971
                 </span>
               </h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -169,6 +170,12 @@ export const LexiconModal: React.FC<LexiconModalProps> = ({
                     <span className="text-base font-bold text-amber-500 font-serif">
                       {entry.wordGcr}
                     </span>
+                    <RegisterPopover
+                      register={entry.register || "Courant"}
+                      explanation={entry.registerExplanation}
+                      word={entry.wordGcr}
+                      isLight={isLight}
+                    />
                     <span className="text-xs text-slate-400">•</span>
                     <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">
                       {entry.wordFr}

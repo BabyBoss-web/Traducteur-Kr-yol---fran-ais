@@ -3,6 +3,7 @@ import { X, Search, Sparkles } from "lucide-react";
 import { PHRASE_CATEGORIES } from "../data/phrases";
 import { Language } from "../types";
 import { MadrasRibbon } from "./MadrasRibbon";
+import { RegisterPopover } from "./RegisterPopover";
 
 interface PhrasebookModalProps {
   isOpen: boolean;
@@ -170,9 +171,17 @@ export const PhrasebookModal: React.FC<PhrasebookModalProps> = ({
                   <p className="text-sm font-medium text-slate-200">
                     {phrase.fr}
                   </p>
-                  <p className="text-sm font-bold text-amber-400 mt-0.5">
-                    {phrase.gcr}
-                  </p>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <p className="text-sm font-bold text-amber-400">
+                      {phrase.gcr}
+                    </p>
+                    <RegisterPopover
+                      register={phrase.context?.includes("Proverbe") || phrase.context?.includes("Encouragement") ? "Traditionnel" : "Courant"}
+                      explanation={phrase.context}
+                      word={phrase.gcr}
+                      isLight={false}
+                    />
+                  </div>
                   {phrase.context && (
                     <p className="text-xs text-slate-400 italic mt-0.5">
                       {phrase.context}
