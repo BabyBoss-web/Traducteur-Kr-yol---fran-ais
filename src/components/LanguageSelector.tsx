@@ -8,6 +8,7 @@ interface LanguageSelectorProps {
   onSwapLanguages: () => void;
   onSelectSource: (lang: Language) => void;
   onSelectTarget: (lang: Language) => void;
+  theme?: "dark" | "light";
 }
 
 export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
@@ -16,14 +17,22 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
   onSwapLanguages,
   onSelectSource,
   onSelectTarget,
+  theme = "dark",
 }) => {
-  const getLangName = (lang: Language) =>
-    lang === "fr" ? "Français" : "Créole Guadeloupéen";
+  const isLight = theme === "light";
 
   return (
-    <div className="bg-slate-800/80 backdrop-blur border border-slate-700/60 rounded-xl p-1.5 flex items-center justify-between shadow-sm max-w-4xl mx-auto my-4">
+    <div
+      role="region"
+      aria-label="Sélection de la direction de traduction"
+      className={`rounded-2xl p-1 flex items-center justify-between transition-all max-w-3xl mx-auto my-3 border ${
+        isLight
+          ? "bg-slate-200/60 border-slate-200 shadow-sm"
+          : "bg-slate-900/80 border-slate-800 shadow-lg"
+      }`}
+    >
       {/* Source Language selector */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1">
         <button
           onClick={() => {
             if (sourceLang !== "fr") {
@@ -31,30 +40,40 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               onSelectTarget("gcr");
             }
           }}
-          className={`px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-all w-full text-center ${
+          aria-label="Traduction du Français vers le Créole Guadeloupéen"
+          aria-pressed={sourceLang === "fr"}
+          className={`w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
             sourceLang === "fr"
-              ? "bg-emerald-600 text-white shadow-md"
-              : "text-slate-300 hover:text-white hover:bg-slate-700/50"
+              ? isLight
+                ? "bg-white text-slate-900 shadow-sm border border-slate-200/80"
+                : "bg-slate-800 text-amber-300 border border-slate-700 shadow-md"
+              : isLight
+                ? "text-slate-600 hover:text-slate-900"
+                : "text-slate-400 hover:text-slate-200"
           }`}
         >
-          Français
+          <span>Français</span>
         </button>
       </div>
 
       {/* Swap Languages Button */}
-      <div className="px-2">
+      <div className="px-1.5">
         <button
           onClick={onSwapLanguages}
-          className="p-2.5 rounded-full text-emerald-400 hover:text-emerald-300 hover:bg-slate-700/80 active:scale-95 transition-all focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-          title="Échanger les langues (Français ↔ Créole Guadeloupéen)"
-          aria-label="Échanger les langues"
+          className={`p-2.5 rounded-xl active:scale-95 transition-all focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center ${
+            isLight
+              ? "bg-amber-500 text-slate-950 hover:bg-amber-400 shadow-sm"
+              : "bg-amber-500/20 text-amber-300 hover:bg-amber-500/30 border border-amber-500/30"
+          }`}
+          title="Échanger les langues (Français ↔ Kréyol Gwadloup)"
+          aria-label="Inverser la langue source et la langue cible"
         >
-          <ArrowLeftRight className="w-5 h-5" />
+          <ArrowLeftRight className="w-4 h-4" />
         </button>
       </div>
 
       {/* Target Language selector */}
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1">
         <button
           onClick={() => {
             if (targetLang !== "gcr") {
@@ -62,13 +81,24 @@ export const LanguageSelector: React.FC<LanguageSelectorProps> = ({
               onSelectTarget("fr");
             }
           }}
-          className={`px-3 sm:px-5 py-2 rounded-lg text-sm font-semibold transition-all w-full text-center ${
+          aria-label="Traduction du Créole Guadeloupéen vers le Français"
+          aria-pressed={sourceLang === "gcr"}
+          className={`w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
             targetLang === "gcr"
-              ? "bg-emerald-600 text-white shadow-md"
-              : "text-slate-300 hover:text-white hover:bg-slate-700/50"
+              ? isLight
+                ? "bg-amber-500 text-slate-950 shadow-sm"
+                : "bg-amber-500/20 text-amber-300 border border-amber-500/40 shadow-md"
+              : isLight
+                ? "text-slate-600 hover:text-slate-900"
+                : "text-slate-400 hover:text-slate-200"
           }`}
         >
-          Créole Guadeloupéen
+          <span>Kréyol Gwadloup</span>
+          <span className={`text-[10px] px-1.5 py-0.2 rounded font-mono font-bold ${
+            isLight ? "bg-amber-600 text-white" : "bg-amber-950/80 text-amber-300"
+          }`}>
+            971
+          </span>
         </button>
       </div>
     </div>

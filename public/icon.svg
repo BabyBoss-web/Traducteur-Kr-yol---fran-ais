@@ -1,13 +1,86 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
-  <rect width="512" height="512" rx="100" fill="#0f172a"/>
-  <circle cx="256" cy="256" r="200" fill="url(#grad)" />
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0d9488" />
-      <stop offset="100%" stop-color="#059669" />
+    <!-- Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#090d16"/>
+    </radialGradient>
+    
+    <!-- Madras Ribbon Pattern Gradient -->
+    <linearGradient id="madrasGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#eab308"/>
+      <stop offset="30%" stop-color="#dc2626"/>
+      <stop offset="60%" stop-color="#16a34a"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+
+    <!-- Drum Body Wood Gradient -->
+    <linearGradient id="woodGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#78350f"/>
+      <stop offset="50%" stop-color="#b45309"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+
+    <!-- Drum Skin Gradient -->
+    <radialGradient id="skinGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="85%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </radialGradient>
+
+    <!-- Golden Rim Glow -->
+    <linearGradient id="goldGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="50%" stop-color="#ef4444"/>
+      <stop offset="100%" stop-color="#10b981"/>
     </linearGradient>
   </defs>
-  <path d="M160 210 Q 256 160 352 210 Q 256 360 160 210 Z" fill="#f59e0b" opacity="0.9"/>
-  <text x="256" y="275" font-family="system-ui, -apple-system, sans-serif" font-size="110" font-weight="bold" fill="#ffffff" text-anchor="middle">KG</text>
-  <text x="256" y="380" font-family="system-ui, -apple-system, sans-serif" font-size="32" font-weight="600" fill="#5eead4" text-anchor="middle">GWADLOUPE</text>
+
+  <!-- Container Base -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad)"/>
+  
+  <!-- Outer Madras Border Ring -->
+  <circle cx="256" cy="256" r="226" fill="none" stroke="url(#goldGlow)" stroke-width="12" opacity="0.9"/>
+  <circle cx="256" cy="256" r="214" fill="none" stroke="#f59e0b" stroke-width="2" stroke-dasharray="8 6" opacity="0.7"/>
+
+  <!-- Butterfly Wings / Palm Canopy Silhouette in Background -->
+  <path d="M120 220 Q 256 120 392 220 Q 320 260 256 240 Q 192 260 120 220 Z" fill="#10b981" opacity="0.15"/>
+
+  <!-- GWO KA DRUM (Tanbou Ka) -->
+  <!-- Drum Barrel -->
+  <path d="M176 210 Q 256 200 336 210 L 316 370 Q 256 385 196 370 Z" fill="url(#woodGrad)" stroke="#292524" stroke-width="4"/>
+  
+  <!-- Drum Barrel Ropes / Tendeurs en V -->
+  <path d="M186 215 L 216 370 M 216 212 L 256 375 M 256 210 L 296 370 M 296 212 L 326 365" stroke="#f59e0b" stroke-width="3" opacity="0.85"/>
+  
+  <!-- Drum Head (Peau du Tanbou Ka) -->
+  <ellipse cx="256" cy="210" rx="80" ry="28" fill="url(#skinGrad)" stroke="#78350f" stroke-width="5"/>
+  <ellipse cx="256" cy="210" rx="68" ry="22" fill="none" stroke="#d97706" stroke-width="2" stroke-dasharray="4 3"/>
+
+  <!-- MADRAS BAND / NOEUD DE MADRAS SUR LE TANBOU -->
+  <path d="M166 235 Q 256 250 346 235 L 342 260 Q 256 275 170 260 Z" fill="url(#madrasGrad)"/>
+  <!-- Madras Plaid Stripes Overlay -->
+  <path d="M190 238 L 190 268 M 220 241 L 220 271 M 250 242 L 250 272 M 280 241 L 280 271 M 310 238 L 310 268" stroke="#ffffff" stroke-width="2" opacity="0.6"/>
+  <path d="M170 248 Q 256 262 342 248" stroke="#f59e0b" stroke-width="2"/>
+
+  <!-- HIBISCUS FLOWER (Fleur d'Hibiscus Rouge & Or) -->
+  <g transform="translate(350, 180) scale(0.7)">
+    <circle cx="0" cy="0" r="14" fill="#ef4444"/>
+    <path d="M0 -25 Q 12 -12 0 0 Q -12 -12 0 -25 Z" fill="#dc2626" transform="rotate(0)"/>
+    <path d="M0 -25 Q 12 -12 0 0 Q -12 -12 0 -25 Z" fill="#dc2626" transform="rotate(72)"/>
+    <path d="M0 -25 Q 12 -12 0 0 Q -12 -12 0 -25 Z" fill="#dc2626" transform="rotate(144)"/>
+    <path d="M0 -25 Q 12 -12 0 0 Q -12 -12 0 -25 Z" fill="#dc2626" transform="rotate(216)"/>
+    <path d="M0 -25 Q 12 -12 0 0 Q -12 -12 0 -25 Z" fill="#dc2626" transform="rotate(288)"/>
+    <!-- Pistil -->
+    <path d="M0 0 Q 15 -25 25 -30" stroke="#f59e0b" stroke-width="4" fill="none" stroke-linecap="round"/>
+    <circle cx="25" cy="-30" r="4" fill="#fef08a"/>
+  </g>
+
+  <!-- TEXT BRANDING -->
+  <text x="256" y="420" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="40" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">
+    KRÉYOL GWADA
+  </text>
+  <text x="256" y="455" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="20" font-weight="700" fill="#f59e0b" text-anchor="middle" letter-spacing="4">
+    GWADLOUP • 971
+  </text>
 </svg>

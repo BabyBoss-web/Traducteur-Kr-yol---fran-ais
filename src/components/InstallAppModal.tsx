@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X, Download, Smartphone, Monitor, CheckCircle2, Share, PlusSquare, ArrowUpRight } from "lucide-react";
 
 interface InstallAppModalProps {
@@ -18,11 +18,30 @@ export const InstallAppModal: React.FC<InstallAppModalProps> = ({
 }) => {
   const [activeTab, setActiveTab] = React.useState<"auto" | "pc" | "android" | "ios">("auto");
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div
+      className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="install-modal-title"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+      >
         {/* Header */}
         <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
           <div className="flex items-center gap-2.5">
@@ -30,7 +49,7 @@ export const InstallAppModal: React.FC<InstallAppModalProps> = ({
               <Download className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-base sm:text-lg font-bold text-white">
+              <h2 id="install-modal-title" className="text-base sm:text-lg font-bold text-white">
                 Télécharger / Installer l'App
               </h2>
               <p className="text-xs text-teal-400 font-medium">
@@ -40,6 +59,7 @@ export const InstallAppModal: React.FC<InstallAppModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Fermer la fenêtre d'installation"
             className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />

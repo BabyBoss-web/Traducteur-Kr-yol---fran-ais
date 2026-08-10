@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { X, WifiOff, Sparkles, BookOpen, Clock, CheckCircle2 } from "lucide-react";
 
 interface OfflineInfoModalProps {
@@ -12,11 +12,30 @@ export const OfflineInfoModal: React.FC<OfflineInfoModalProps> = ({
   onClose,
   onOpenPhrasebook,
 }) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        onClose();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4">
-      <div className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col">
+    <div
+      className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="offline-modal-title"
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="bg-slate-900 border border-slate-700/80 rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden flex flex-col"
+      >
         {/* Modal Header */}
         <div className="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/90">
           <div className="flex items-center gap-2.5">
@@ -24,7 +43,7 @@ export const OfflineInfoModal: React.FC<OfflineInfoModalProps> = ({
               <WifiOff className="w-5 h-5" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-white">
+              <h2 id="offline-modal-title" className="text-lg font-bold text-white">
                 Mode Hors-Ligne
               </h2>
               <p className="text-xs text-emerald-400 font-medium">
@@ -34,6 +53,7 @@ export const OfflineInfoModal: React.FC<OfflineInfoModalProps> = ({
           </div>
           <button
             onClick={onClose}
+            aria-label="Fermer les informations du mode hors-ligne"
             className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-slate-800 transition-colors"
           >
             <X className="w-5 h-5" />

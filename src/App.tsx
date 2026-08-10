@@ -7,12 +7,36 @@ import { GrammarModal } from "./components/GrammarModal";
 import { HistoryModal } from "./components/HistoryModal";
 import { OfflineInfoModal } from "./components/OfflineInfoModal";
 import { InstallAppModal } from "./components/InstallAppModal";
+import { LexiconModal } from "./components/LexiconModal";
+import { FeedbackModal } from "./components/FeedbackModal";
 import { Toast } from "./components/Toast";
 import { Language, TranslationResult, TranslationHistoryItem } from "./types";
 import { PHRASE_CATEGORIES } from "./data/phrases";
 import { Sparkles, BookOpen, History, ArrowLeftRight, Check, Copy } from "lucide-react";
 
 export default function App() {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("kreyol_theme");
+        return (saved as "dark" | "light") || "light";
+      } catch (e) {
+        return "light";
+      }
+    }
+    return "light";
+  });
+
+  const toggleTheme = () => {
+    const nextTheme = theme === "dark" ? "light" : "dark";
+    setTheme(nextTheme);
+    try {
+      localStorage.setItem("kreyol_theme", nextTheme);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
   const [sourceLang, setSourceLang] = useState<Language>("fr");
   const [targetLang, setTargetLang] = useState<Language>("gcr");
   const [sourceText, setSourceText] = useState<string>("");
@@ -28,6 +52,8 @@ export default function App() {
   const [isHistoryOpen, setIsHistoryOpen] = useState<boolean>(false);
   const [isOfflineInfoOpen, setIsOfflineInfoOpen] = useState<boolean>(false);
   const [isInstallModalOpen, setIsInstallModalOpen] = useState<boolean>(false);
+  const [isLexiconOpen, setIsLexiconOpen] = useState<boolean>(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState<boolean>(false);
 
   // PWA installation prompt state
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
@@ -270,7 +296,11 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-200 ${
+      theme === "light"
+        ? "bg-[#fcfbf9] text-slate-800 selection:bg-amber-400 selection:text-slate-950"
+        : "bg-slate-950 text-slate-100 selection:bg-amber-500 selection:text-slate-950"
+    }`}>
       {/* Navigation Header */}
       <Header
         onOpenPhrasebook={() => setIsPhrasebookOpen(true)}
@@ -278,7 +308,11 @@ export default function App() {
         onOpenHistory={() => setIsHistoryOpen(true)}
         onOpenOfflineInfo={() => setIsOfflineInfoOpen(true)}
         onOpenInstallApp={() => setIsInstallModalOpen(true)}
+        onOpenLexicon={() => setIsLexiconOpen(true)}
+        onOpenFeedback={() => setIsFeedbackOpen(true)}
         historyCount={history.length}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Content Area */}
@@ -296,6 +330,7 @@ export default function App() {
             setTargetLang(lang);
             setSourceLang(lang === "fr" ? "gcr" : "fr");
           }}
+          theme={theme}
         />
 
         {/* Translation Box Area */}
@@ -313,63 +348,114 @@ export default function App() {
           isCopied={isCopied}
           onToggleFavorite={() => handleToggleFavorite()}
           isFavorite={history.length > 0 && history[0]?.isFavorite}
+          onOpenLexicon={() => setIsLexiconOpen(true)}
+          onOpenFeedback={() => setIsFeedbackOpen(true)}
+          theme={theme}
         />
 
         {/* Quick Suggestion Chips / Instant Phrases */}
         {!sourceText && (
-          <div className="max-w-4xl mx-auto w-full pt-4">
-            <div className="flex items-center justify-between mb-3 px-1">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>Expressions fréquentes à essayer</span>
-              </span>
+          <div className="max-w-4xl mx-auto w-full pt-1 space-y-3">
+            {/* Traditional Proverb Banner - Compact & Harmonious */}
+            <div className={`rounded-2xl p-3 sm:p-4 shadow-sm relative overflow-hidden transition-all border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 ${
+              theme === "light"
+                ? "bg-amber-50/80 border-amber-200/80 text-slate-800"
+                : "bg-slate-900/80 border-amber-500/20 text-slate-200"
+            }`}>
+              <div className="flex items-center gap-2.5">
+                <div className={`p-2 rounded-xl font-serif text-xs font-bold shrink-0 ${
+                  theme === "light" ? "bg-amber-200/80 text-amber-950" : "bg-amber-500/20 text-amber-300"
+                }`}>
+                  Pawòl
+                </div>
+                <div>
+                  <p className={`text-xs sm:text-sm font-bold font-serif ${
+                    theme === "light" ? "text-amber-950" : "text-amber-300"
+                  }`}>
+                    « Tjenbé rèd, pa molli ! »
+                  </p>
+                  <p className={`text-[11px] sm:text-xs ${
+                    theme === "light" ? "text-slate-600" : "text-slate-400"
+                  }`}>
+                    « Tiens bon, ne faiblis pas ! » (Slogan de courage)
+                  </p>
+                </div>
+              </div>
+
               <button
                 onClick={() => setIsPhrasebookOpen(true)}
-                className="text-xs text-emerald-400 hover:underline font-semibold"
+                className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all border shrink-0 flex items-center gap-1 ${
+                  theme === "light"
+                    ? "bg-white hover:bg-amber-100/80 text-amber-900 border-amber-300 shadow-sm"
+                    : "bg-slate-800 hover:bg-slate-700 text-amber-300 border-slate-700"
+                }`}
               >
-                Voir tout le guide →
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Guide d'expressions →</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-              {[
-                { fr: "Bonjour !", gcr: "Bonjou !" },
-                { fr: "Comment vas-tu ?", gcr: "Ki jan ou yé ?" },
-                { fr: "Je suis en train de travailler", gcr: "Mwen ka travay" },
-                { fr: "J'ai fini mon travail", gcr: "Mwen travay" },
-                { fr: "J'étais en train de lire", gcr: "Mwen té ka li" },
-                { fr: "Je vais venir demain", gcr: "Mwen ké vini demen" },
-                { fr: "Où est ma maison ?", gcr: "Koté kaz an mwen yé ?" },
-                { fr: "Pas de problème !", gcr: "Pani pwoblèm !" },
-              ].map((item, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => {
-                    setSourceLang("fr");
-                    setTargetLang("gcr");
-                    setSourceText(item.fr);
-                  }}
-                  className="bg-slate-900/80 hover:bg-slate-800 border border-slate-800 hover:border-emerald-500/40 rounded-xl p-2.5 text-left transition-all group shadow-sm"
-                >
-                  <p className="text-xs font-medium text-slate-300 group-hover:text-white">
-                    {item.fr}
-                  </p>
-                  <p className="text-xs font-bold text-emerald-400 mt-1">
-                    {item.gcr}
-                  </p>
-                </button>
-              ))}
+            {/* Instant Phrases Horizontal Scroll / Compact Bar */}
+            <div>
+              <div className="flex items-center justify-between mb-2 px-1">
+                <span className={`text-[11px] font-bold uppercase tracking-wider ${
+                  theme === "light" ? "text-slate-500" : "text-slate-400"
+                }`}>
+                  Suggestions rapides
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
+                {[
+                  { fr: "Bonjour !", gcr: "Bonjou !" },
+                  { fr: "Comment vas-tu ?", gcr: "Ki jan ou yé ?" },
+                  { fr: "Je suis en train de travailler", gcr: "Mwen ka travay" },
+                  { fr: "J'ai fini mon travail", gcr: "Mwen travay" },
+                  { fr: "Je vais venir demain", gcr: "Mwen ké vini demen" },
+                  { fr: "Pas de problème !", gcr: "Pani pwoblèm !" },
+                ].map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setSourceLang("fr");
+                      setTargetLang("gcr");
+                      setSourceText(item.fr);
+                    }}
+                    className={`whitespace-nowrap rounded-xl px-3 py-2 text-left transition-all border shrink-0 shadow-sm text-xs ${
+                      theme === "light"
+                        ? "bg-white hover:bg-amber-50 border-slate-200/90 text-slate-800"
+                        : "bg-slate-900/90 hover:bg-slate-800 border-slate-800 text-slate-200"
+                    }`}
+                  >
+                    <span className="font-medium text-slate-500 mr-1.5">{item.fr}</span>
+                    <span className={`font-bold font-serif ${
+                      theme === "light" ? "text-amber-900" : "text-amber-400"
+                    }`}>
+                      ({item.gcr})
+                    </span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         )}
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 py-4 bg-slate-950 text-center text-xs text-slate-500">
-        <p className="flex items-center justify-center gap-1">
-          <span>Traducteur Kréyol Gwadloupéyen</span> •
-          <span>Orthographe GEREC officielle</span> •
-          <span>Marqueurs ka, té ka, ké</span>
+      <footer className={`py-5 text-center text-xs space-y-1.5 border-t ${
+        theme === "light"
+          ? "bg-slate-100/60 border-slate-200/80 text-slate-600"
+          : "bg-slate-950 border-slate-900 text-slate-500"
+      }`}>
+        <p className={`flex flex-wrap items-center justify-center gap-2 ${
+          theme === "light" ? "text-slate-700" : "text-slate-400"
+        }`}>
+          <span className={`font-bold ${theme === "light" ? "text-amber-900" : "text-amber-400"}`}>Peyi Gwadloup 971</span> •
+          <span>Lang an nou, fierte an nou</span> •
+          <span>Orthographe GEREC officielle</span>
+        </p>
+        <p className={`text-[11px] ${theme === "light" ? "text-slate-500" : "text-slate-600"}`}>
+          Traduction linguistique spécialisée Français ↔ Kréyol Gwadloupéyen
         </p>
       </footer>
 
@@ -407,6 +493,24 @@ export default function App() {
         deferredPrompt={deferredPrompt}
         onInstallClick={handleInstallClick}
         isStandalone={isStandalone}
+      />
+
+      <LexiconModal
+        isOpen={isLexiconOpen}
+        onClose={() => setIsLexiconOpen(false)}
+        onSelectWord={(word) => {
+          setSourceText((prev) => (prev ? `${prev} ${word}` : word));
+          showToast(`Mot "${word}" ajouté au texte`);
+        }}
+        theme={theme}
+      />
+
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
+        sourceText={sourceText}
+        translatedText={translatedText}
+        theme={theme}
       />
 
       {/* Toast Notification */}
