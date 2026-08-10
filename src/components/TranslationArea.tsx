@@ -387,30 +387,29 @@ export const TranslationArea: React.FC<TranslationAreaProps> = ({
               )}
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="hidden sm:inline">{sourceText.length} caractères</span>
-              <button
-                onClick={onTranslate}
-                disabled={!sourceText.trim() || isLoading}
-                aria-label="Lancer la traduction"
-                className={`px-4 py-2 rounded-xl font-bold flex items-center gap-2 shadow-sm disabled:opacity-40 disabled:cursor-not-allowed transition-all active:scale-95 ${
+            <div className="flex items-center gap-2.5">
+              <span className="hidden sm:inline text-[11px] font-medium text-slate-400">
+                {sourceText.length} car.
+              </span>
+              {isLoading ? (
+                <div className="flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-xl bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin text-amber-500" />
+                  <span>Traduction...</span>
+                </div>
+              ) : sourceText.trim() ? (
+                <div className={`flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 rounded-xl border ${
                   isLight
-                    ? "bg-amber-500 hover:bg-amber-400 text-slate-950"
-                    : "bg-amber-500 hover:bg-amber-400 text-slate-950"
-                }`}
-              >
-                {isLoading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Traduction...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Traduire</span>
-                    <Send className="w-3.5 h-3.5" />
-                  </>
-                )}
-              </button>
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                    : "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                }`}>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>En direct</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-1 text-[11px] text-slate-400 italic">
+                  <span>Traduction en temps réel</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

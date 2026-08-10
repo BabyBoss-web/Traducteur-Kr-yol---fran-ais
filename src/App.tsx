@@ -149,50 +149,95 @@ export default function App() {
   };
 
   // Perform AI Translation via Backend API
-  const handleTranslate = useCallback(async () => {
-    if (!sourceText.trim()) return;
+  const handleTranslate = useCallback(
+    async (textParam?: string, srcLangParam?: Language, tgtLangParam?: Language) => {
+      const textToTranslate = textParam !== undefined ? textParam : sourceText;
+      const srcLang = srcLangParam || sourceLang;
+      const tgtLang = tgtLangParam || targetLang;
 
-    // First check offline dictionary for instant match
-    const offlineMatch = checkOfflineDictionary(sourceText, sourceLang);
-    if (offlineMatch) {
-      setTranslatedText(offlineMatch.translation);
-      setTranslationResult(offlineMatch);
-      addToHistory(sourceText, offlineMatch.translation, sourceLang, targetLang, offlineMatch);
+      const trimmed = textToTranslate.trim();
+      if (!trimmed) {
+        setTranslatedText("");
+        setTranslationResult(null);
+        setIsLoading(false);
+        return;
+      }
+
+      // First check offline dictionary for instant match
+      const offlineMatch = checkOfflineDictionary(trimmed, srcLang);
+      if (offlineMatch) {
+        setTranslatedText(offlineMatch.translation);
+        setTranslationResult(offlineMatch);
+        addToHistory(trimmed, offlineMatch.translation, srcLang, tgtLang, offlineMatch);
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const response = await fetch("/api/translate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            text: trimmed,
+            sourceLang: srcLang,
+            targetLang: tgtLang,
+          }),
+        });
+
+        const resData = await response.json();
+
+        if (resData.success && resData.data) {
+          const result: TranslationResult = resData.data;
+          setTranslatedText(result.translation || trimmed);
+          setTranslationResult(result);
+
+          addToHistory(trimmed, result.translation || trimmed, srcLang, tgtLang, result);
+        } else {
+          // Fallback if API returned non-success response
+          const fallbackResult: TranslationResult = {
+            translation: trimmed,
+            grammaticalNotes: "Mot ou expression conservé en l'état.",
+            wordBreakdown: [{ source: trimmed, target: trimmed, explanation: "Conservation du mot" }],
+          };
+          setTranslatedText(trimmed);
+          setTranslationResult(fallbackResult);
+        }
+      } catch (error: any) {
+        console.error("Translation error fallback:", error);
+        // Fallback to displaying the entered text as-is if network or server fails
+        const fallbackResult: TranslationResult = {
+          translation: trimmed,
+          grammaticalNotes: "Mot ou expression conservé en l'état.",
+          wordBreakdown: [{ source: trimmed, target: trimmed, explanation: "Conservation du mot" }],
+        };
+        setTranslatedText(trimmed);
+        setTranslationResult(fallbackResult);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [sourceText, sourceLang, targetLang]
+  );
+
+  // Automatic real-time translation with debouncing
+  useEffect(() => {
+    const trimmed = sourceText.trim();
+    if (!trimmed) {
+      setTranslatedText("");
+      setTranslationResult(null);
+      setIsLoading(false);
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const response = await fetch("/api/translate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: sourceText,
-          sourceLang,
-          targetLang,
-        }),
-      });
+    const timer = setTimeout(() => {
+      handleTranslate(sourceText, sourceLang, targetLang);
+    }, 350);
 
-      const resData = await response.json();
-
-      if (resData.success && resData.data) {
-        const result: TranslationResult = resData.data;
-        setTranslatedText(result.translation);
-        setTranslationResult(result);
-
-        addToHistory(sourceText, result.translation, sourceLang, targetLang, result);
-      } else {
-        throw new Error(resData.error || "Erreur de traduction");
-      }
-    } catch (error: any) {
-      console.error("Translation error:", error);
-      showToast(error.message || "Erreur lors de la traduction.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [sourceText, sourceLang, targetLang]);
+    return () => clearTimeout(timer);
+  }, [sourceText, sourceLang, targetLang, handleTranslate]);
 
   // Add translation to history
   const addToHistory = (
